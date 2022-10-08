@@ -1,9 +1,9 @@
 package com.portfolio.jlm.Controller;
 
-import com.portfolio.jlm.Dto.dtoAdm;
-import com.portfolio.jlm.Entity.Adm;
+import com.portfolio.jlm.Dto.dtoSkills;
+import com.portfolio.jlm.Entity.skills;
 import com.portfolio.jlm.Security.Controller.Mensaje;
-import com.portfolio.jlm.Service.SAdm;
+import com.portfolio.jlm.Service.Sskills;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,60 +21,62 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("adm")
+@RequestMapping("skills")
 //@CrossOrigin(origins = "http://localhost:4200")
 @CrossOrigin(origins = "https://portfoliojlm.web.app")
-public class CAdm {
+public class Cskills {
     @Autowired
-    SAdm sAdm;
+    Sskills sskills;
     
     @GetMapping("/lista")
-    public ResponseEntity<List<Adm>> list(){
-        List<Adm> list = sAdm.list();
+    public ResponseEntity<List<skills>> list(){
+        List<skills> list = sskills.list();
         return new ResponseEntity(list, HttpStatus.OK);
     }
     
     @GetMapping("/detail/{id}")
-    public ResponseEntity<Adm> getById(@PathVariable("id") int id) {
-        if(!sAdm.existsById(id))
+    public ResponseEntity<skills> getById(@PathVariable("id") int id) {
+        if(!sskills.existsById(id))
             return new ResponseEntity(new Mensaje("No existe"), HttpStatus.NOT_FOUND);
-        Adm adm = sAdm.getOne(id).get();
-        return new ResponseEntity(adm, HttpStatus.OK);
+        skills skill = sskills.getOne(id).get();
+        return new ResponseEntity(skill, HttpStatus.OK);
     }
     
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody dtoAdm dtoadm){
-        if(StringUtils.isBlank(dtoadm.getNombreE()))
+    public ResponseEntity<?> create(@RequestBody dtoSkills dtoskill){
+        if(StringUtils.isBlank(dtoskill.getNombre()))
             return new ResponseEntity(new Mensaje("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
         
-        Adm adm = new Adm(dtoadm.getNombreE());
-        sAdm.save(adm);
+        skills skill = new skills(dtoskill.getNombre(), dtoskill.getNumero());
+        sskills.save(skill);
         
-        return new ResponseEntity(new Mensaje("Información agregada"), HttpStatus.OK);
+        return new ResponseEntity(new Mensaje("Skill agregada"), HttpStatus.OK);
     }
     
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody dtoAdm dtoadm){
-        if(!sAdm.existsById(id))
+    public ResponseEntity<?> update(@PathVariable("id") int id, @RequestBody dtoSkills dtoskill){
+        if(!sskills.existsById(id))
             return new ResponseEntity(new Mensaje("El ID no existe"), HttpStatus.BAD_REQUEST);
         
-        if(StringUtils.isBlank(dtoadm.getNombreE()))
+        if(StringUtils.isBlank(dtoskill.getNombre()))
             return new ResponseEntity(new Mensaje("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
         
-        Adm adm = sAdm.getOne(id).get();
-        adm.setNombreE(dtoadm.getNombreE());
+        skills skill = sskills.getOne(id).get();
+        skill.setNombre(dtoskill.getNombre());
+        skill.setNumero(dtoskill.getNumero());
         
-        sAdm.save(adm);
-        return new ResponseEntity(new Mensaje("Información actualizada"), HttpStatus.OK);
+        sskills.save(skill);
+        return new ResponseEntity(new Mensaje("Skill actualizado"), HttpStatus.OK);
     }
     
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") int id){
-        if(!sAdm.existsById(id))
+        if(!sskills.existsById(id))
             return new ResponseEntity(new Mensaje("El ID no existe"), HttpStatus.BAD_REQUEST);
         
-        sAdm.delete(id);
+        sskills.delete(id);
         
-        return new ResponseEntity(new Mensaje("Información eliminada"), HttpStatus.OK);
+        return new ResponseEntity(new Mensaje("Skill eliminado"), HttpStatus.OK);
     }
 }
+
